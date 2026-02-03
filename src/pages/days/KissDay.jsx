@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Star, Timer, Trophy, Zap, Clock } from 'lucide-react';
+import { Heart, Star, Timer, Trophy, Zap, Clock, Stars } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const KissDay = () => {
