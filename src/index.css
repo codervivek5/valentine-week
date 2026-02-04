@@ -91,6 +91,22 @@ body::before {
   .heartbeat {
     animation: heartbeat 1.5s ease-in-out infinite;
   }
+
+  .responsive-padding {
+    @apply p-6 md:p-12;
+  }
+
+  .responsive-margin {
+    @apply m-4 md:m-8;
+  }
+
+  .responsive-text-huge {
+    @apply text-4xl md:text-6xl lg:text-7xl;
+  }
+
+  .responsive-text-large {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
 }
 
 @keyframes heartbeat {

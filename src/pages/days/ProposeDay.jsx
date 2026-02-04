@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, ChevronRight, RefreshCcw, Sparkles, Activity } from 'lucide-react';
+import { Heart, ChevronRight, RefreshCcw, Sparkles, Activity, Share2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const ProposeDay = () => {
@@ -86,8 +86,22 @@ const ProposeDay = () => {
         setCurrentScene(5);
     };
 
+    const handleShare = () => {
+        const text = `I just proposed in LoveBound! 💍✨ My journey was ${choices.join(', ')}. Forever begins!`;
+        if (navigator.share) {
+            navigator.share({
+                title: 'LoveBound - Propose Day',
+                text: text,
+                url: window.location.href,
+            });
+        } else {
+            navigator.clipboard.writeText(text);
+            alert('Proposal details copied to clipboard!');
+        }
+    };
+
     return (
-        <div className="max-w-3xl mx-auto py-12 px-4 min-h-[70vh] flex flex-col justify-center">
+        <div className="max-w-3xl mx-auto py-6 md:py-12 px-2 md:px-4 min-h-[70vh] flex flex-col justify-center">
             <AnimatePresence mode="wait">
                 {currentScene <= 4 ? (
                     <motion.div
@@ -95,39 +109,39 @@ const ProposeDay = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -30 }}
-                        className="glass-card p-12 rounded-[3rem] text-center space-y-10 relative overflow-hidden"
+                        className="glass-card p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] text-center space-y-8 md:space-y-10 relative overflow-hidden border-white/5 shadow-2xl"
                     >
                         {/* Progress indicator */}
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-white/5">
                             <motion.div
-                                className="h-full bg-gradient-to-r from-romantic-400 to-romantic-600"
+                                className="h-full bg-gradient-to-r from-romantic-400 to-romantic-600 shadow-[0_0_10px_#f43f5e]"
                                 initial={{ width: "0%" }}
                                 animate={{ width: `${(currentScene / 4) * 100}%` }}
                             />
                         </div>
 
-                        <h2 className="text-4xl font-black">{scenes[currentScene].title}</h2>
-                        <p className="text-xl text-gray-400 leading-relaxed font-serif italic">
+                        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter">{scenes[currentScene].title}</h2>
+                        <p className="text-lg md:text-xl text-gray-400 leading-relaxed font-serif italic px-2">
                             "{scenes[currentScene].text}"
                         </p>
 
                         {scenes[currentScene].options && (
-                            <div className="flex flex-col gap-5 mt-10">
+                            <div className="flex flex-col gap-4 mt-6 md:mt-10">
                                 {scenes[currentScene].options.map((opt, i) => (
                                     <button
                                         key={i}
                                         onClick={() => handleChoice(opt)}
-                                        className="group relative flex items-center justify-between p-8 bg-white/5 hover:bg-romantic-600/10 border border-white/5 hover:border-romantic-500/50 rounded-3xl transition-all"
+                                        className="group relative flex items-center justify-between p-6 md:p-8 bg-white/5 hover:bg-romantic-600/10 border border-white/5 hover:border-romantic-500/50 rounded-2xl md:rounded-3xl transition-all shadow-lg"
                                     >
-                                        <span className="text-xl font-bold">{opt.text}</span>
-                                        <ChevronRight className="w-8 h-8 text-romantic-500 transform group-hover:translate-x-2 transition-transform" />
+                                        <span className="text-lg md:text-xl font-bold">{opt.text}</span>
+                                        <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-romantic-500 transform group-hover:translate-x-2 transition-transform" />
                                     </button>
                                 ))}
                             </div>
                         )}
 
                         {scenes[currentScene].isRhythmStep && (
-                            <div className="py-10 space-y-12">
+                            <div className="py-6 md:py-10 space-y-8 md:space-y-12">
                                 <div className="relative flex justify-center items-center">
                                     <motion.button
                                         whileTap={{ scale: 0.85 }}
@@ -136,22 +150,23 @@ const ProposeDay = () => {
                                             scale: isBeating ? [1, 1.2, 1] : 1,
                                             filter: isBeating ? 'drop-shadow(0 0 20px #f43f5e)' : 'none'
                                         }}
-                                        className={`w-40 h-40 rounded-full flex items-center justify-center transition-colors ${isBeating ? 'bg-romantic-500' : 'bg-white/10'}`}
+                                        className={`w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center transition-colors shadow-2xl ${isBeating ? 'bg-romantic-500' : 'bg-white/10'}`}
                                     >
-                                        <Heart className={`w-20 h-20 ${isBeating ? 'text-white fill-white' : 'text-gray-600'}`} />
+                                        <Heart className={`w-16 h-16 md:w-20 md:h-20 ${isBeating ? 'text-white fill-white' : 'text-gray-600'}`} />
                                     </motion.button>
                                     <div className="absolute -bottom-8">
-                                        <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Tap to the Rhythm</span>
+                                        <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-gray-500">Tap to the Rhythm</span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <div className="flex justify-between text-xs font-black uppercase tracking-widest text-romantic-400">
-                                        <Activity className="w-4 h-4" /> <span>Courage Meter</span>
+                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-romantic-400">
+                                        <div className="flex items-center gap-2"><Activity className="w-4 h-4" /> Courage Meter</div>
+                                        <span>{courage}%</span>
                                     </div>
-                                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
                                         <motion.div
-                                            className="h-full bg-romantic-500"
+                                            className="h-full bg-romantic-500 rounded-full"
                                             animate={{ width: `${courage}%` }}
                                         />
                                     </div>
@@ -164,7 +179,7 @@ const ProposeDay = () => {
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 onClick={handleFinalPropose}
-                                className="w-full py-8 bg-romantic-600 hover:bg-romantic-700 rounded-3xl text-3xl font-black shadow-2xl shadow-romantic-500/50 flex items-center justify-center gap-4 group"
+                                className="w-full py-6 md:py-8 bg-romantic-600 hover:bg-romantic-700 rounded-2xl md:rounded-3xl text-2xl md:text-3xl font-black shadow-2xl shadow-romantic-500/50 flex items-center justify-center gap-4 group transition-all"
                             >
                                 PROPOSE <Sparkles className="group-hover:rotate-12 transition-transform" />
                             </motion.button>
@@ -175,22 +190,30 @@ const ProposeDay = () => {
                         key="success"
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="text-center space-y-10"
+                        className="text-center space-y-8 md:space-y-10 px-4"
                     >
-                        <div className="text-[12rem] heartbeat">💍</div>
-                        <h2 className="text-7xl font-black text-gradient glow-red">Forever Begins!</h2>
-                        <div className="p-8 glass rounded-[3rem] max-w-lg mx-auto border-romantic-500/30">
-                            <p className="text-xl text-gray-300 italic">
-                                "Your path was <span className="text-romantic-300 font-bold underline">{choices.join(', ')}</span>.
+                        <div className="text-8xl md:text-[12rem] heartbeat drop-shadow-[0_0_50px_rgba(244,63,94,0.3)]">💍</div>
+                        <h2 className="text-5xl md:text-7xl font-black text-gradient glow-red tracking-tight uppercase italic">Forever Begins!</h2>
+                        <div className="p-6 md:p-8 glass rounded-[2rem] md:rounded-[3rem] max-w-lg mx-auto border-romantic-500/30 shadow-2xl">
+                            <p className="text-lg md:text-xl text-gray-300 italic leading-relaxed">
+                                "Your path was <span className="text-romantic-300 font-bold underline px-1">{choices.join(', ')}</span>.
                                 With a courageous heart, you've started a journey that will never end."
                             </p>
                         </div>
-                        <button
-                            onClick={() => { setCurrentScene(0); setChoices([]); setCourage(0); }}
-                            className="flex items-center gap-3 px-10 py-5 glass rounded-2xl font-black text-lg hover:bg-white/10 transition-all mx-auto border-white/10"
-                        >
-                            <RefreshCcw className="w-6 h-6" /> Re-experience the Moment
-                        </button>
+                        <div className="flex flex-col gap-4 max-w-md mx-auto w-full">
+                            <button
+                                onClick={handleShare}
+                                className="w-full py-5 bg-romantic-600 hover:bg-romantic-700 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-romantic-500/20"
+                            >
+                                Share Moment <Share2 className="w-6 h-6" />
+                            </button>
+                            <button
+                                onClick={() => { setCurrentScene(0); setChoices([]); setCourage(0); }}
+                                className="w-full flex items-center justify-center gap-3 py-5 glass rounded-2xl font-black text-lg hover:bg-white/10 transition-all border-white/10"
+                            >
+                                <RefreshCcw className="w-5 h-5" /> Re-experience
+                            </button>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

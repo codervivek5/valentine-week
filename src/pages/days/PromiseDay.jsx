@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Lock, Unlock, History, RotateCcw, PenTool } from 'lucide-react';
+import { PenTool, Heart, Check, Trash2, History, Share2, MousePointer2, ShieldCheck, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const PromiseDay = () => {
-    const [step, setStep] = useState(1); // 1: Type, 2: Sign, 3: Success
+    const [step, setStep] = useState(1); // 1: Write, 2: Sign, 3: Success
     const [currentPromise, setCurrentPromise] = useState('');
-    const [promises, setPromises] = useState([
-        { text: "I promise to always listen to you.", date: "2026-02-11", hash: "V0ID-99" }
-    ]);
+    const [promises, setPromises] = useState([]);
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
 
@@ -19,17 +17,31 @@ const PromiseDay = () => {
             particleCount: 150,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ['#8b5cf6', '#f43f5e']
+            colors: ['#f43f5e', '#ffffff']
         });
 
         const newPromise = {
             text: currentPromise,
-            date: new Date().toISOString().split('T')[0],
-            hash: Math.random().toString(36).substring(7).toUpperCase()
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            hash: Math.random().toString(36).substring(7).toUpperCase(),
+            id: Date.now()
         };
-
         setPromises([newPromise, ...promises]);
         setStep(3);
+    };
+
+    const handleShare = () => {
+        const text = `I just sealed a sacred promise in LoveBound! 📜✨\nPromise: "${currentPromise}"\nSealed with a digital signature!`;
+        if (navigator.share) {
+            navigator.share({
+                title: 'LoveBound - Promise Day',
+                text: text,
+                url: window.location.href,
+            });
+        } else {
+            navigator.clipboard.writeText(text);
+            alert('Promise details copied to clipboard!');
+        }
     };
 
     // Canvas Logic for Signing
@@ -69,140 +81,156 @@ const PromiseDay = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4 font-serif">
-            <div className="text-center mb-16 space-y-4">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center">
-                    <ShieldCheck className="w-12 h-12 text-romantic-500 heartbeat" />
-                </motion.div>
-                <h1 className="text-6xl font-black text-gradient tracking-tight">The Oath Wall</h1>
-                <p className="text-gray-400 font-sans max-w-xl mx-auto">Seal your heart's decree with the Enchanted Ink of Truth.</p>
+        <div className="max-w-4xl mx-auto py-6 md:py-12 px-2 md:px-4">
+            <div className="text-center mb-8 md:mb-12">
+                <h1 className="text-4xl md:text-6xl font-black mb-2 text-gradient uppercase tracking-tighter">The Vow Registry</h1>
+                <p className="text-sm md:text-base text-gray-400 font-medium px-4">Promises are the threads that weave two souls together. Make them eternal.</p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
-                <AnimatePresence mode="wait">
-                    {step === 1 && (
-                        <motion.div
-                            key="step1"
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="glass-card p-10 rounded-[2.5rem] space-y-8 border-romantic-500/20 shadow-[0_0_50px_rgba(244,63,94,0.1)]"
-                        >
-                            <div className="flex items-center gap-3 text-romantic-400">
-                                <PenTool className="w-6 h-6" />
-                                <span className="font-sans font-black uppercase tracking-widest text-xs">A New Covenant</span>
-                            </div>
-                            <textarea
-                                value={currentPromise}
-                                onChange={(e) => setCurrentPromise(e.target.value)}
-                                placeholder="What is your eternal promise?..."
-                                className="w-full h-52 bg-white/[0.02] border border-white/10 rounded-[2rem] p-8 focus:outline-none focus:ring-4 focus:ring-romantic-500/20 transition-all text-2xl italic leading-relaxed"
-                            />
-                            <button
-                                onClick={startSigning}
-                                disabled={!currentPromise}
-                                className="w-full py-6 bg-romantic-600 hover:bg-romantic-700 disabled:opacity-30 rounded-2xl font-black font-sans text-xl shadow-xl transition-all"
-                            >
-                                Proceed to Signature
-                            </button>
-                        </motion.div>
-                    )}
-
-                    {step === 2 && (
-                        <motion.div
-                            key="step2"
-                            initial={{ opacity: 0, rotate: 2 }}
-                            animate={{ opacity: 1, rotate: 0 }}
-                            exit={{ opacity: 0, rotate: -2 }}
-                            className="glass-card p-10 rounded-[3rem] space-y-8 bg-neutral-900 shadow-2xl"
-                        >
-                            <div className="text-center space-y-2">
-                                <h3 className="text-2xl font-black font-sans">Seal with Ink</h3>
-                                <p className="text-xs text-gray-500 font-sans uppercase tracking-[0.3em]">Signature or Symbol of Devotion</p>
-                            </div>
-
-                            <div className="relative bg-white/[0.03] border border-white/10 rounded-[2rem] overflow-hidden">
-                                <canvas
-                                    ref={canvasRef}
-                                    width={400}
-                                    height={200}
-                                    onMouseDown={startDraw}
-                                    onMouseMove={draw}
-                                    onMouseUp={endDraw}
-                                    onMouseOut={endDraw}
-                                    onTouchStart={startDraw}
-                                    onTouchMove={draw}
-                                    onTouchEnd={endDraw}
-                                    className="w-full h-52 cursor-crosshair touch-none"
-                                />
-                                <div className="absolute bottom-4 right-4 pointer-events-none opacity-20">
-                                    <PenTool className="w-12 h-12 text-romantic-500" />
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4 font-sans">
-                                <button onClick={() => setStep(1)} className="flex-1 py-4 glass rounded-2xl font-bold">Refine Text</button>
-                                <button onClick={handleSeal} className="flex-1 py-4 bg-romantic-600 rounded-2xl font-black shadow-lg">Finalize Oath</button>
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {step === 3 && (
-                        <motion.div
-                            key="step3"
-                            initial={{ opacity: 0, scale: 1.1 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="glass-card p-12 rounded-[4rem] text-center space-y-8 border-romantic-500"
-                        >
-                            <div className="flex justify-center">
-                                <div className="w-24 h-24 bg-romantic-500 rounded-full flex items-center justify-center shadow-[0_0_40px_#f43f5e] animate-pulse">
-                                    <Lock className="w-12 h-12 text-white" />
-                                </div>
-                            </div>
-                            <h3 className="text-4xl font-black">Oath Eternalized</h3>
-                            <p className="text-gray-400 leading-relaxed font-sans px-4">
-                                "Your promise has been etched into the vault of time. It shall remain, unwavering and true."
-                            </p>
-                            <button onClick={() => { setStep(1); setCurrentPromise(''); }} className="w-full py-5 glass hover:bg-white/10 rounded-2xl font-black font-sans tracking-wide">
-                                Seal Post-Oath Decree
-                            </button>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {/* History Area */}
-                <div className="space-y-8">
-                    <div className="flex items-center justify-between font-sans px-2">
-                        <h3 className="text-xl font-black tracking-widest text-gray-500 flex items-center gap-3">
-                            <History className="w-5 h-5" /> Covenant History
-                        </h3>
-                        <div className="text-[10px] px-3 py-1 bg-white/5 border border-white/10 rounded-full text-romantic-300 font-bold uppercase tracking-tighter">Verified Arcana</div>
-                    </div>
-
-                    <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
-                        {promises.map((p, i) => (
+            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-start">
+                <div className="glass-card p-6 md:p-10 rounded-[2.2rem] md:rounded-[3rem] border-white/5 shadow-2xl min-h-[450px] md:min-h-[500px] flex flex-col justify-center order-1 lg:order-1">
+                    <AnimatePresence mode="wait">
+                        {step === 1 && (
                             <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                key={i}
-                                className="p-8 glass-card rounded-[2.5rem] border-l-8 border-romantic-500 bg-gradient-to-br from-white/[0.03] to-transparent group"
+                                key="step1"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 1.05 }}
+                                className="space-y-6 md:space-y-8"
                             >
-                                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-20 transition-opacity">
-                                    <ShieldCheck className="w-10 h-10 text-romantic-500" />
+                                <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic">Inscribe your Vow</h3>
+                                <div className="relative">
+                                    <textarea
+                                        value={currentPromise}
+                                        onChange={(e) => setCurrentPromise(e.target.value)}
+                                        placeholder="I promise to always..."
+                                        className="w-full h-40 md:h-52 bg-white/5 border border-white/10 rounded-2xl md:rounded-[2rem] p-6 focus:outline-none focus:ring-2 focus:ring-romantic-500 transition-all text-lg md:text-xl font-medium leading-relaxed"
+                                    />
+                                    <div className="absolute bottom-4 right-6 text-[10px] font-black uppercase tracking-widest text-gray-600">
+                                        Word of Honor
+                                    </div>
                                 </div>
-                                <p className="text-2xl leading-relaxed italic pr-4 mb-6">"{p.text}"</p>
-                                <div className="flex items-center justify-between font-sans">
-                                    <div className="flex flex-col gap-1">
-                                        <span className="text-[10px] font-black uppercase text-gray-600 tracking-widest">Temporal Stamp</span>
-                                        <span className="text-xs font-bold text-gray-400">{p.date}</span>
+                                <button
+                                    onClick={startSigning}
+                                    disabled={!currentPromise}
+                                    className="w-full py-5 md:py-6 bg-romantic-600 hover:bg-romantic-700 disabled:opacity-50 rounded-xl md:rounded-2xl font-black text-lg md:text-xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-romantic-500/20"
+                                >
+                                    Proceed to Seal <Check className="w-6 h-6" />
+                                </button>
+                            </motion.div>
+                        )}
+
+                        {step === 2 && (
+                            <motion.div
+                                key="step2"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="space-y-6 md:space-y-8"
+                            >
+                                <div className="text-center">
+                                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic">Sign the Sacred Bond</h3>
+                                    <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mt-1 font-black">Use your touch or mouse to sign</p>
+                                </div>
+                                <div className="bg-white rounded-2xl md:rounded-3xl overflow-hidden cursor-crosshair relative shadow-inner">
+                                    <canvas
+                                        ref={canvasRef}
+                                        width={400}
+                                        height={250}
+                                        onMouseDown={startDraw}
+                                        onMouseMove={draw}
+                                        onMouseUp={endDraw}
+                                        onMouseOut={endDraw}
+                                        onTouchStart={startDraw}
+                                        onTouchMove={draw}
+                                        onTouchEnd={endDraw}
+                                        className="w-full h-[200px] md:h-[250px] touch-none"
+                                    />
+                                    <div className="absolute bottom-4 right-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-300 pointer-events-none">
+                                        <MousePointer2 className="w-3 h-3" /> Digital Signature Area
                                     </div>
-                                    <div className="flex flex-col items-end gap-1">
-                                        <span className="text-[10px] font-black uppercase text-gray-600 tracking-widest">Hash ID</span>
-                                        <span className="text-xs font-mono text-romantic-400">{p.hash}</span>
-                                    </div>
+                                </div>
+                                <div className="flex gap-3 md:gap-4">
+                                    <button
+                                        onClick={() => setStep(1)}
+                                        className="flex-1 py-4 border border-white/10 hover:bg-white/5 rounded-xl md:rounded-2xl transition-all text-xs md:text-sm font-black uppercase tracking-widest text-gray-400"
+                                    >
+                                        Refine
+                                    </button>
+                                    <button
+                                        onClick={handleSeal}
+                                        className="flex-[2] py-4 bg-romantic-600 hover:bg-romantic-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl transition-all shadow-lg shadow-romantic-500/20"
+                                    >
+                                        Seal Vow
+                                    </button>
                                 </div>
                             </motion.div>
-                        ))}
+                        )}
+
+                        {step === 3 && (
+                            <motion.div
+                                key="step3"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-center space-y-6 md:space-y-8"
+                            >
+                                <div className="inline-block p-6 rounded-full bg-romantic-500/10 mb-2">
+                                    <PenTool className="w-12 h-12 md:w-16 md:h-16 text-romantic-400" />
+                                </div>
+                                <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic">Vow Eternalized</h3>
+                                <p className="text-lg md:text-xl text-gray-300 italic font-medium px-4 leading-relaxed">
+                                    "Your words are now part of the cosmic record, sealed with your unique essence."
+                                </p>
+                                <div className="flex flex-col gap-3">
+                                    <button
+                                        onClick={handleShare}
+                                        className="w-full py-5 bg-romantic-600 hover:bg-romantic-700 rounded-xl md:rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all shadow-xl shadow-romantic-500/20"
+                                    >
+                                        Share Vow <Share2 className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setStep(1);
+                                            setCurrentPromise('');
+                                        }}
+                                        className="w-full py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-400"
+                                    >
+                                        New Promise Day
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                <div className="space-y-6 md:space-y-8 order-2 lg:order-2">
+                    <h3 className="text-2xl md:text-3xl font-black flex items-center gap-3 uppercase tracking-tighter italic">
+                        <History className="text-romantic-500" /> The Vow Archives
+                    </h3>
+                    <div className="space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto pr-2 md:pr-4 custom-scrollbar">
+                        {promises.length === 0 ? (
+                            <div className="p-10 md:p-12 rounded-[2rem] md:rounded-[3rem] border border-dashed border-white/10 text-center text-gray-500 italic font-medium">
+                                The registry is blank. Begin your legacy.
+                            </div>
+                        ) : (
+                            promises.map((p, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className="p-6 md:p-8 rounded-[1.8rem] md:rounded-[2.5rem] glass-card border-white/5 relative overflow-hidden group shadow-lg"
+                                >
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-100 transition-opacity">
+                                        <Heart className="w-12 h-12 md:w-16 md:h-16 text-romantic-500" />
+                                    </div>
+                                    <p className="text-lg md:text-xl font-serif italic text-gray-200 leading-relaxed mb-4">"{p.text}"</p>
+                                    <div className="flex items-center justify-between text-[8px] md:text-[10px] font-black uppercase tracking-widest text-romantic-300/60 border-t border-white/5 pt-4">
+                                        <span>EST. {p.date}</span>
+                                        <span>ID: {p.hash}</span>
+                                    </div>
+                                </motion.div>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>
