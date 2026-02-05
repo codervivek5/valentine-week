@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Palette, Sparkles, Wand2, Info, Share2, RefreshCcw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, Palette, Sparkles, Wand2, Info, Share2, RefreshCcw, Map, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const TeddyDay = () => {
@@ -27,7 +28,6 @@ const TeddyDay = () => {
 
     const bindSoul = () => {
         setIsBinding(true);
-        // Determine personality
         const selectedColor = colors.find(c => c.hex === color);
         const personalities = [selectedColor.trait, 'Loyal', 'Playful', 'Brave', 'Kind'];
         const randomTrait = personalities[Math.floor(Math.random() * personalities.length)];
@@ -67,7 +67,7 @@ const TeddyDay = () => {
                 className="text-center mb-8 md:mb-12"
             >
                 <h1 className="text-4xl md:text-6xl font-black mb-2 text-gradient glow-red uppercase tracking-tighter italic">The Teddy Workshop</h1>
-                <p className="text-sm md:text-base text-gray-400 font-medium">Create a companion for life. Bind its soul with love.</p>
+                <p className="text-sm md:text-base text-gray-400 font-medium tracking-widest uppercase text-[10px]">Create a companion for life. Bind its soul with love.</p>
             </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -187,11 +187,6 @@ const TeddyDay = () => {
                                             {isBinding ? 'Binding Soul...' : 'Bind the Soul'} <Sparkles />
                                         </button>
                                     </div>
-                                    <div className="p-4 md:p-6 glass rounded-2xl md:rounded-3xl border-romantic-500/20">
-                                        <p className="text-[9px] md:text-xs text-center text-gray-500 leading-relaxed font-bold uppercase tracking-[0.2em]">
-                                            The ritual will manifest a unique personality trait from the chosen essence.
-                                        </p>
-                                    </div>
                                 </motion.div>
                             )}
 
@@ -214,11 +209,27 @@ const TeddyDay = () => {
                                         >
                                             Share Teddy <Share2 className="w-5 h-5" />
                                         </button>
+
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Link
+                                                to="/"
+                                                className="py-4 glass border border-white/5 hover:bg-white/10 rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-500 hover:text-white"
+                                            >
+                                                <Map className="w-4 h-4" /> World Map
+                                            </Link>
+                                            <Link
+                                                to="/promise-day"
+                                                className="py-4 bg-white/10 hover:bg-white/20 rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-white"
+                                            >
+                                                Next Quest <ChevronRight className="w-4 h-4" />
+                                            </Link>
+                                        </div>
+
                                         <button
                                             onClick={() => { setStep(0); setName(''); }}
-                                            className="w-full py-3 md:py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-400"
+                                            className="text-[10px] font-bold text-gray-600 uppercase tracking-[0.3em] hover:text-gray-400 transition-colors mt-2"
                                         >
-                                            <RefreshCcw className="w-4 h-4" /> Create Another
+                                            Create Another
                                         </button>
                                     </div>
                                 </motion.div>

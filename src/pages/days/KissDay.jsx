@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Star, Timer, Trophy, Zap, Clock, Stars, Share2, RefreshCcw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, Star, Timer, Trophy, Zap, Clock, Stars, Share2, RefreshCcw, Map, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const KissDay = () => {
@@ -34,7 +35,6 @@ const KissDay = () => {
         const now = Date.now();
         const timeDiff = now - lastCatchTime;
 
-        // Combo logic: catching within 1.2 seconds increments combo (slight buff)
         if (timeDiff < 1200) {
             const newCombo = combo + 1;
             setCombo(newCombo);
@@ -45,14 +45,13 @@ const KissDay = () => {
 
         setLastCatchTime(now);
 
-        // Score calculation
         let points = type === 'golden' ? 50 : 10;
-        points *= Math.floor(1 + combo / 3); // Multiplier every 3 combo (more aggressive flair)
+        points *= Math.floor(1 + combo / 3);
 
         setScore(s => s + points);
 
         if (type === 'golden') {
-            setTimeLeft(prev => prev + 3); // Time bonus
+            setTimeLeft(prev => prev + 3);
             confetti({
                 particleCount: 50,
                 spread: 40,
@@ -144,19 +143,36 @@ const KissDay = () => {
                                         <span className="text-3xl md:text-6xl font-black text-white">{Math.min(100, Math.floor(score / 20))}%</span>
                                     </div>
                                 </div>
-                                <div className="flex flex-col md:flex-row gap-3 pt-4">
-                                    <button
-                                        onClick={handleShare}
-                                        className="px-8 md:px-12 py-3 md:py-4 bg-romantic-600 hover:bg-romantic-700 rounded-xl md:rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all shadow-xl shadow-romantic-500/20"
-                                    >
-                                        Share Result <Share2 className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={startGame}
-                                        className="px-8 md:px-12 py-3 md:py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-400"
-                                    >
-                                        <RefreshCcw className="w-4 h-4" /> Re-Engage
-                                    </button>
+                                <div className="flex flex-col gap-3 pt-4">
+                                    <div className="flex flex-col md:flex-row gap-3">
+                                        <button
+                                            onClick={handleShare}
+                                            className="px-8 md:px-12 py-3 md:py-4 bg-romantic-600 hover:bg-romantic-700 rounded-xl md:rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all shadow-xl shadow-romantic-500/20 flex-1"
+                                        >
+                                            Share Result <Share2 className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={startGame}
+                                            className="px-8 md:px-12 py-3 md:py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-400"
+                                        >
+                                            <RefreshCcw className="w-4 h-4" /> Re-Engage
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <Link
+                                            to="/"
+                                            className="py-4 glass border border-white/5 hover:bg-white/10 rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-500 hover:text-white"
+                                        >
+                                            <Map className="w-4 h-4" /> World Map
+                                        </Link>
+                                        <Link
+                                            to="/valentine-day"
+                                            className="py-4 bg-white/10 hover:bg-white/20 rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-white"
+                                        >
+                                            The Finale <ChevronRight className="w-4 h-4" />
+                                        </Link>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
@@ -192,7 +208,6 @@ const KissDay = () => {
                     </AnimatePresence>
                 )}
 
-                {/* Environment Decor */}
                 <div className="absolute bottom-4 md:bottom-6 left-4 md:left-6 flex items-center gap-4 opacity-10 font-black italic text-2xl md:text-4xl pointer-events-none uppercase tracking-tighter">
                     Precision // Velocity // Devotion
                 </div>

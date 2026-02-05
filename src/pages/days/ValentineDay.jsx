@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Stars, Sparkles, Send, MapPin, Calendar, Music, History, Share2, Download, RefreshCcw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, Stars, Sparkles, Send, MapPin, Calendar, Music, History, Share2, Download, RefreshCcw, Map } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const ValentineDay = () => {
@@ -139,7 +140,7 @@ const ValentineDay = () => {
                     >
                         <div className="text-center space-y-2">
                             <History className="w-8 h-8 md:w-10 md:h-10 text-romantic-500 mx-auto mb-4" />
-                            <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter">Reflecting on the Week</h3>
+                            <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic">Reflecting on the Week</h3>
                             <p className="text-gray-500 text-[10px] uppercase tracking-[0.3em] font-black">Synthesizing Your Experiences</p>
                         </div>
 
@@ -184,7 +185,6 @@ const ValentineDay = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className="relative"
                     >
-                        {/* The Masterpiece Letter */}
                         <div className="glass-card p-8 md:p-20 rounded-[3rem] md:rounded-[5rem] bg-gradient-to-b from-neutral-900 to-black border-romantic-500/40 shadow-[0_0_120px_rgba(244,63,94,0.3)] relative group overflow-hidden">
                             <div className="absolute top-6 md:top-12 left-6 md:left-12 flex items-center gap-2 md:gap-3 text-gray-700 font-black tracking-widest text-[8px] md:text-[9px] uppercase">
                                 <Calendar className="w-3 h-3 md:w-4 md:h-4" /> 2026 02 14 // FINAL SYMPHONY
@@ -213,7 +213,6 @@ const ValentineDay = () => {
                                 </div>
                             </div>
 
-                            {/* Elegant Wax Seal Icon */}
                             <div className="absolute bottom-10 right-10 md:bottom-20 md:right-20">
                                 <motion.div
                                     initial={{ scale: 4, opacity: 0 }}
@@ -233,12 +232,14 @@ const ValentineDay = () => {
                             >
                                 <Share2 className="w-6 h-6" /> Share Symphony
                             </button>
-                            <button
-                                onClick={() => window.print()}
+
+                            <Link
+                                to="/"
                                 className="flex-1 py-4 md:py-6 glass border border-white/5 hover:bg-white/10 rounded-2xl md:rounded-3xl font-black text-lg md:text-xl flex items-center justify-center gap-3 transition-all uppercase tracking-widest text-gray-400"
                             >
-                                <Download className="w-5 h-5" /> Archive PDF
-                            </button>
+                                <Map className="w-5 h-5" /> World Map
+                            </Link>
+
                             <button
                                 onClick={() => setStep(1)}
                                 className="px-6 py-4 md:py-6 glass border border-white/5 hover:bg-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center transition-all group"

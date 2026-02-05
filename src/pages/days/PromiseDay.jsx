@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PenTool, Heart, Check, Trash2, History, Share2, MousePointer2, ShieldCheck, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { PenTool, Heart, Check, Trash2, History, Share2, MousePointer2, ShieldCheck, Lock, Map, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const PromiseDay = () => {
@@ -44,7 +45,6 @@ const PromiseDay = () => {
         }
     };
 
-    // Canvas Logic for Signing
     useEffect(() => {
         if (step === 2 && canvasRef.current) {
             const canvas = canvasRef.current;
@@ -83,8 +83,8 @@ const PromiseDay = () => {
     return (
         <div className="max-w-4xl mx-auto py-6 md:py-12 px-2 md:px-4">
             <div className="text-center mb-8 md:mb-12">
-                <h1 className="text-4xl md:text-6xl font-black mb-2 text-gradient uppercase tracking-tighter">The Vow Registry</h1>
-                <p className="text-sm md:text-base text-gray-400 font-medium px-4">Promises are the threads that weave two souls together. Make them eternal.</p>
+                <h1 className="text-4xl md:text-6xl font-black mb-2 text-gradient uppercase tracking-tighter italic">The Vow Registry</h1>
+                <p className="text-sm md:text-base text-gray-400 font-medium px-4 tracking-widest uppercase text-[10px] font-bold">Promises are the threads that weave two souls together. Make them eternal.</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-start">
@@ -174,7 +174,7 @@ const PromiseDay = () => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="text-center space-y-6 md:space-y-8"
                             >
-                                <div className="inline-block p-6 rounded-full bg-romantic-500/10 mb-2">
+                                <div className="inline-block p-6 rounded-full bg-romantic-500/10 mb-2 font-black italic">
                                     <PenTool className="w-12 h-12 md:w-16 md:h-16 text-romantic-400" />
                                 </div>
                                 <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter italic">Vow Eternalized</h3>
@@ -188,14 +188,30 @@ const PromiseDay = () => {
                                     >
                                         Share Vow <Share2 className="w-5 h-5" />
                                     </button>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <Link
+                                            to="/"
+                                            className="py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-500 hover:text-white"
+                                        >
+                                            <Map className="w-4 h-4" /> World Map
+                                        </Link>
+                                        <Link
+                                            to="/hug-day"
+                                            className="py-4 bg-white/10 hover:bg-white/20 rounded-xl md:rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-white"
+                                        >
+                                            Next Quest <ChevronRight className="w-4 h-4" />
+                                        </Link>
+                                    </div>
+
                                     <button
                                         onClick={() => {
                                             setStep(1);
                                             setCurrentPromise('');
                                         }}
-                                        className="w-full py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-400"
+                                        className="text-[10px] font-bold text-gray-600 uppercase tracking-[0.3em] hover:text-gray-400 transition-colors mt-2"
                                     >
-                                        New Promise Day
+                                        New Promise Ceremony
                                     </button>
                                 </div>
                             </motion.div>

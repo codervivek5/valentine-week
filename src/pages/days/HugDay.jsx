@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sun, Wind, Snowflake, Flame, Share2, RefreshCcw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, Sun, Wind, Snowflake, Flame, Share2, RefreshCcw, Map, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const HugDay = () => {
@@ -9,7 +10,6 @@ const HugDay = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [isGameOver, setIsGameOver] = useState(false);
 
-    // Generate random frost patches
     const spawnFrost = useCallback(() => {
         if (isSuccess || isGameOver) return;
         const newFrost = {
@@ -22,11 +22,9 @@ const HugDay = () => {
     }, [isSuccess, isGameOver]);
 
     useEffect(() => {
-        const spawner = setInterval(spawnFrost, 1500); // Increased frequency for more gamified difficulty
+        const spawner = setInterval(spawnFrost, 1500);
         const drainer = setInterval(() => {
             if (isSuccess || isGameOver) return;
-
-            // Warmth decays naturally + more if frosts are present
             setWarmth(prev => {
                 const decay = 1 + (frosts.length * 2);
                 const next = prev - decay;
@@ -37,7 +35,6 @@ const HugDay = () => {
                 return next;
             });
         }, 500);
-
         return () => {
             clearInterval(spawner);
             clearInterval(drainer);
@@ -64,7 +61,7 @@ const HugDay = () => {
 
     const shatterFrost = (id) => {
         setFrosts(prev => prev.filter(f => f.id !== id));
-        setWarmth(prev => Math.min(100, prev + 5)); // Reward for shattering
+        setWarmth(prev => Math.min(100, prev + 5));
     };
 
     const reset = () => {
@@ -96,7 +93,6 @@ const HugDay = () => {
             </div>
 
             <div className="relative max-w-xl mx-auto aspect-square glass-card rounded-[2.5rem] md:rounded-[4rem] border-white/5 overflow-hidden flex items-center justify-center shadow-2xl">
-                {/* Dynamic Background */}
                 <motion.div
                     animate={{
                         backgroundColor: warmth > 60 ? '#f43f5e' : warmth > 30 ? '#fdba74' : '#3b82f6',
@@ -107,7 +103,6 @@ const HugDay = () => {
                     style={{ scale: 0.8 }}
                 />
 
-                {/* The Game Core */}
                 <div className="relative z-10 w-full px-6 md:px-12 space-y-8 md:space-y-12">
                     <div className="flex flex-col items-center gap-6 md:gap-8">
                         <motion.button
@@ -121,7 +116,6 @@ const HugDay = () => {
                             >
                                 <Heart className="w-20 h-20 md:w-28 md:h-28 text-white fill-white" />
                             </motion.div>
-                            {/* Steam Particles */}
                             {warmth > 70 && [...Array(3)].map((_, i) => (
                                 <motion.div
                                     key={i}
@@ -153,7 +147,6 @@ const HugDay = () => {
                     </div>
                 </div>
 
-                {/* Frost Patches */}
                 <AnimatePresence>
                     {frosts.map((frost) => (
                         <motion.button
@@ -170,7 +163,6 @@ const HugDay = () => {
                     ))}
                 </AnimatePresence>
 
-                {/* Game End States */}
                 <AnimatePresence>
                     {(isSuccess || isGameOver) && (
                         <motion.div
@@ -184,7 +176,7 @@ const HugDay = () => {
                                         <Flame className="w-12 h-12 md:w-16 md:h-16 text-white" />
                                     </div>
                                     <h2 className="text-3xl md:text-5xl font-black text-gradient uppercase tracking-tighter italic mb-4">The Eternal Glow</h2>
-                                    <p className="text-sm md:text-base text-gray-400 italic mb-8 md:mb-10 max-w-md">"You've defied the chill. The universe is now {Math.round(warmth)}% warmer because of your love."</p>
+                                    <p className="text-sm md:text-base text-gray-400 italic mb-8 md:mb-10 max-w-md px-4">"You've defied the chill. The universe is now {Math.round(warmth)}% warmer because of your love."</p>
                                     <div className="flex flex-col gap-3 w-full max-w-xs">
                                         <button
                                             onClick={handleShare}
@@ -192,11 +184,25 @@ const HugDay = () => {
                                         >
                                             Share Warmth <Share2 className="w-5 h-5" />
                                         </button>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Link
+                                                to="/"
+                                                className="py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-500 hover:text-white"
+                                            >
+                                                <Map className="w-4 h-4" /> World Map
+                                            </Link>
+                                            <Link
+                                                to="/kiss-day"
+                                                className="py-4 bg-white/10 hover:bg-white/20 rounded-xl md:rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-white"
+                                            >
+                                                Next Quest <ChevronRight className="w-4 h-4" />
+                                            </Link>
+                                        </div>
                                         <button
                                             onClick={reset}
-                                            className="w-full py-3 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-400 font-black"
+                                            className="text-[10px] font-bold text-gray-600 uppercase tracking-[0.3em] hover:text-gray-400 transition-colors mt-2"
                                         >
-                                            <RefreshCcw className="w-4 h-4" /> Relight the Heart
+                                            Relight the Heart
                                         </button>
                                     </div>
                                 </>
@@ -206,13 +212,21 @@ const HugDay = () => {
                                         <Snowflake className="w-12 h-12 md:w-16 md:h-16 text-white" />
                                     </div>
                                     <h2 className="text-3xl md:text-5xl font-black text-blue-400 uppercase tracking-tighter italic mb-4">Frozen Silence</h2>
-                                    <p className="text-sm md:text-base text-gray-400 italic mb-8 md:mb-10 max-w-md">The chill was too strong... but love never truly dies. Try once more?</p>
-                                    <button
-                                        onClick={reset}
-                                        className="w-full max-w-xs py-4 md:py-5 bg-blue-600 hover:bg-blue-700 rounded-xl md:rounded-2xl font-black text-lg md:text-xl shadow-2xl transition-all active:scale-95"
-                                    >
-                                        RECLAIM THE HEAT
-                                    </button>
+                                    <p className="text-sm md:text-base text-gray-400 italic mb-8 md:mb-10 max-w-md px-4">The chill was too strong... but love never truly dies. Try once more?</p>
+                                    <div className="flex flex-col gap-3 w-full max-w-xs">
+                                        <button
+                                            onClick={reset}
+                                            className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-xl md:rounded-2xl font-black text-lg shadow-2xl transition-all active:scale-95"
+                                        >
+                                            RECLAIM THE HEAT
+                                        </button>
+                                        <Link
+                                            to="/"
+                                            className="py-4 glass border border-white/5 hover:bg-white/10 rounded-xl md:rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 transition-all uppercase tracking-widest text-gray-500 hover:text-white"
+                                        >
+                                            <Map className="w-4 h-4" /> Retreat to Map
+                                        </Link>
+                                    </div>
                                 </>
                             )}
                         </motion.div>
